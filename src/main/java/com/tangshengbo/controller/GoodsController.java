@@ -5,6 +5,8 @@ import com.tangshengbo.model.ApiResult;
 import com.tangshengbo.model.Goods;
 import com.tangshengbo.model.PageBean;
 import com.tangshengbo.service.GoodsService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +27,8 @@ import java.util.Date;
 @RequestMapping("/goods")
 public class GoodsController {
 
+    private static final Logger logger = LoggerFactory.getLogger(GoodsController.class);
+
     @Autowired
     private GoodsService goodsService;
 
@@ -35,14 +39,15 @@ public class GoodsController {
      * 分页查询
      *
      * @param goods    查询条件
-     * @param pageCode 当前页
+     * @param pageNum 当前页
      * @param pageSize 每页显示的记录数
      * @return
      */
     @RequestMapping("/findByConPage")
-    public ApiResult findByConPage(@RequestBody Goods goods,
+    public ApiResult findByConPage(Goods goods,
                                    @RequestParam(value = "pageNum", defaultValue = "1", required = false) int pageNum,
-                                   @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize) {
+                                   @RequestParam(value = "pageSize", defaultValue = "5", required = false) int pageSize) {
+        logger.info("分页查询参数:pageNum:{},pageSize:{},Goods:{}", pageNum, pageSize, goods);
         PageBean pageBean = goodsService.findByPage(goods, pageNum, pageSize);
         return ApiResult.success(pageBean);
     }
@@ -163,4 +168,6 @@ public class GoodsController {
             return new ApiResult(false, "上传失败");
         }
     }
+
+
 }

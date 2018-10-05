@@ -1,5 +1,7 @@
 package com.tangshengbo.model;
 
+import com.alibaba.fastjson.JSON;
+
 public class Goods {
     /**
      * 编号
@@ -104,5 +106,10 @@ public class Goods {
      */
     public void setBrand(String brand) {
         this.brand = brand == null ? null : brand.trim();
+    }
+
+    @Override
+    public String toString() {
+        return JSON.toJSONString(this);
     }
 }

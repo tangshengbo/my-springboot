@@ -14,11 +14,11 @@
     <el-menu mode="horizontal" :default-active="activeIndex">
         <el-menu-item index="0" id="logo">Spring Boot入门</el-menu-item>
         <el-menu-item index="1"><a href="/index">首页</a></el-menu-item>
-        <el-menu-item index="2"><a href="/goods">商品列表</a></el-menu-item>
+        <el-menu-item index="2"><a href="/goods/list">商品列表</a></el-menu-item>
         <el-menu-item id="author" index="3">
             <img class="el-tooltip" src="http://tycoding.cn/author/avatar.png"/>
             <el-dropdown>
-                <span class="el-dropdown-link">TyCoding<i class="el-icon-arrow-down el-icon--right"></i></span>
+                <span class="el-dropdown-link" ref="loginName">TyCoding<i class="el-icon-arrow-down el-icon--right"></i></span>
                 <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item>首页</el-dropdown-item>
                     <el-dropdown-item><a href="https://github.com/TyCoding" target="_blank">GitHub</a>
@@ -62,7 +62,7 @@
                         <el-button type="danger" plain icon="el-icon-delete" @click="deleteSelect(multipleSelection)">删除
                         </el-button>
                         <el-button icon="el-icon-refresh"
-                                   @click="search(pageConf.pageCode,pageConf.pageSize)">刷新
+                                   @click="search(pageConf.pageNum,pageConf.pageSize)">刷新
                         </el-button>
                     </el-row>
                     <span class="el-tag avue-tip">
@@ -82,7 +82,8 @@
                         border
                         tooltip-effect="dark"
                         style="width: 100%"
-                        @selection-change="selectChange">
+                        @selection-change="selectChange"
+                        @sort-change="sortChange">
                     <el-table-column
                             ref="selection"
                             align="center"
@@ -145,10 +146,9 @@
                 <!-- 分页 -->
                 <div class="pagination">
                     <el-pagination
-                            background
                             @size-change="handleSizeChange"
                             @current-change="handleCurrentChange"
-                            :current-page="pageConf.pageCode"
+                            :current-page="pageConf.pageNum"
                             :page-sizes="pageConf.pageOption"
                             :page-size="pageConf.pageSize"
                             layout="total, sizes, prev, pager, next, jumper"
@@ -186,7 +186,7 @@
     <!-- 新增按钮的dialog -->
     <el-dialog title="添加信息" :visible.sync="showSave" width="30%" :close-on-click-modal="false"
                :close-on-press-escape="false">
-        <el-form class="editor-form" :model="editor" status-icon ref="editor"
+        <el-form class=".editor-form" :model="editor" status-icon ref="editor"
                  label-width="100px">
             <el-form-item prop="title" label="商品标题" class="is-required"
                           :rules="[{ required: true, message: '商品标题不能为空'}]">
@@ -203,6 +203,8 @@
                         ref="upload"
                         action="/upload"
                         multiple
+
+                        
                         name="picture"
                         list-type="picture-card"
                         :limit="1"

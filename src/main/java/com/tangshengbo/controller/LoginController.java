@@ -95,4 +95,24 @@ public class LoginController {
     public String register() {
         return "home/register";
     }
+
+    /**
+     * 注册页面
+     *
+     * @return
+     */
+    @GetMapping({"/", "/index"})
+    public String index() {
+        return "index";
+    }
+
+    /**
+     * 注册页面
+     *
+     * @return
+     */
+    @GetMapping("/goods/list")
+    public String list() {
+        return "site/goods";
+    }
 }
