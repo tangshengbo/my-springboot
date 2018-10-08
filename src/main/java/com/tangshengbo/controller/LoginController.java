@@ -16,6 +16,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
  * Created by Tangshengbo on 2018/9/30
  */
 @Controller
+@RequestMapping("")
 public class LoginController {
 
     @Autowired
@@ -76,25 +77,25 @@ public class LoginController {
         return new ApiResult(false, "发生未知错误");
     }
 
-    /**
-     * 登录页
-     *
-     * @return
-     */
-    @GetMapping("/login")
-    public String login() {
-        return "home/login";
-    }
+//    /**
+//     * 登录页
+//     *
+//     * @return
+//     */
+//    @GetMapping("/login")
+//    public String login() {
+//        return "home/login";
+//    }
 
-    /**
-     * 注册页面
-     *
-     * @return
-     */
-    @GetMapping("/register")
-    public String register() {
-        return "home/register";
-    }
+//    /**
+//     * 注册页面
+//     *
+//     * @return
+//     */
+//    @GetMapping("/register")
+//    public String register() {
+//        return "home/register";
+//    }
 
     /**
      * 注册页面
@@ -106,13 +107,13 @@ public class LoginController {
         return "index";
     }
 
-    /**
-     * 注册页面
-     *
-     * @return
-     */
-    @GetMapping("/goods/list")
-    public String list() {
-        return "site/goods";
-    }
+//    /**
+//     * 注册页面
+//     *
+//     * @return
+//     */
+//    @GetMapping("/goods/list")
+//    public String list() {
+//        return "site/goods";
+//    }
 }

@@ -1,41 +1,40 @@
 package com.tangshengbo.interceptor;
 
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Pointcut;
+import com.alibaba.fastjson.JSON;
+import com.tangshengbo.model.ApiResult;
+import com.tangshengbo.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
+import org.springframework.http.MediaType;
+import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.PrintWriter;
 
 /**
  * Created by Tangshengbo on 2018/9/30
  */
-@Component
-@Aspect
-public class LoginInterceptor {
+public class LoginInterceptor extends HandlerInterceptorAdapter {
 
     private static final Logger logger = LoggerFactory.getLogger(LoginInterceptor.class);
 
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        User user = (User) request.getSession().getAttribute("user");
+        if (user == null) {
+            logger.info("-----------用户未登录-----------");
+//            response.sendRedirect("/login"); //手动转发到/login映射路径
+            // response.setCharacterEncoding("UTF-8");
+            response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+            PrintWriter out = response.getWriter();
+            out.append(JSON.toJSONString(ApiResult.error("用户未登录")));
+            out.flush();
+            out.close();
 
-    @Pointcut("within (com.tangshengbo.controller..*) && !within(com.tangshengbo.controller.LoginController)")
-    public void pointCut() {
-    }
-
-    @Around("pointCut()")
-    public Object trackInfo(ProceedingJoinPoint joinPoint) throws Throwable {
-//        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-//        HttpServletRequest request = attributes.getRequest();
-////        request.getSession().setAttribute("user", new User()); //测试，手动添加用户登录的session
-//        User user = (User) request.getSession().getAttribute("user");
-//        if (user == null) {
-//            System.out.println("-----------用户未登录-----------");
-//            attributes.getResponse().sendRedirect("/home/login"); //手动转发到/login映射路径
-//        }
-//        System.out.println("-----------用户已登录-----------");
-//        //一定要指定Object返回值，若AOP拦截的Controller return了一个视图地址，那么本来Controller应该跳转到这个视图地址的，但是被AOP拦截了，那么原来Controller仍会执行return，但是视图地址却找不到404了
-//        //切记一定要调用proceed()方法
-//        //proceed()：执行被通知的方法，如不调用将会阻止被通知的方法的调用，也就导致Controller中的return会404
-        return joinPoint.proceed();
+            return false;
+        }
+        logger.info("-----------用户已登录-----------");
+        return true;
     }
 }
