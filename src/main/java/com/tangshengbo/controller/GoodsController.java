@@ -168,6 +168,4 @@ public class GoodsController {
             return new ApiResult(false, "上传失败");
         }
     }
-
-
 }
