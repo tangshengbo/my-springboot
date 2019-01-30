@@ -10,8 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.PrintWriter;
 import java.util.List;
 
 /**
@@ -49,15 +47,20 @@ public class UserController {
     }
 
     @GetMapping("/jsonp")
-    public void jsonpCall(@RequestParam(value = "callback", required = false) String callback, HttpServletResponse response) throws Exception {
+    public String jsonpCall(@RequestParam(value = "callback", required = false) String callback) throws Exception {
 //        ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
 //        requestAttributes.getResponse().setHeader("Access-Control-Allow-Origin", "http://localhost:8085");DispatcherServlet
         logger.info("jsonpCall param:{}", callback);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("jsonp", "成功");
-        response.setCharacterEncoding("UTF-8");
-        PrintWriter writer = response.getWriter();
-        writer.write(callback + "(" +jsonObject.toJSONString() + ")");
-        writer.flush();
+        return callback + "(" + jsonObject.toJSONString() + ")";
+    }
+
+    @CrossOrigin(origins = {"http://localhost:8085"}, allowCredentials = "true", allowedHeaders = {"GET", "POST"})
+    @RequestMapping("/cors")
+    public String corsCall() {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("cors", "成功");
+        return jsonObject.toJSONString();
     }
 }
