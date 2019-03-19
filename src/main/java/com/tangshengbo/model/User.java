@@ -1,5 +1,7 @@
 package com.tangshengbo.model;
 
+import com.alibaba.fastjson.JSON;
+
 public class User {
     /**
      * 编号
@@ -70,5 +72,10 @@ public class User {
      */
     public void setPassword(String password) {
         this.password = password == null ? null : password.trim();
+    }
+
+    @Override
+    public String toString() {
+        return JSON.toJSONString(this);
     }
 }

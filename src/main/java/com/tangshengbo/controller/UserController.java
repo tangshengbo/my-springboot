@@ -7,10 +7,12 @@ import com.tangshengbo.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by Tangshengbo on 2018/9/30
@@ -26,14 +28,24 @@ public class UserController {
     @Autowired
     private RestTemplate restTemplate;
 
+    @Autowired
+    private RedisTemplate redisTemplate;
+
     /**
      * 查询所有
      *
      * @return
      */
+    @SuppressWarnings("unchecked")
     @RequestMapping("/findAll")
     public List<User> findAll() {
-        return userService.findAll();
+        List<User> findAll = (List<User>) redisTemplate.opsForValue().get("findAll");
+        if (Objects.nonNull(findAll) && !findAll.isEmpty()) {
+            return findAll;
+        }
+        List<User> userList = userService.findAll();
+        redisTemplate.opsForValue().set("findAll", userList);
+        return userList;
     }
 
 
