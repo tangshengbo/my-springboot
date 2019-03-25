@@ -23,7 +23,6 @@ import java.io.InputStream;
 import java.text.Format;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Created by Tang on 2017/6/26.
@@ -91,9 +90,6 @@ public class WebLogAspect extends BaseController {
     public Object doAround(ProceedingJoinPoint pjp) throws Throwable {
         long startTime = System.currentTimeMillis();
         Object ob = pjp.proceed();// ob 为方法的返回值
-        if (Objects.isNull(ob)) {
-            ob = pjp.proceed();// ob 为方法的返回值
-        }
         logger.info("耗时 : " + (System.currentTimeMillis() - startTime) + "ms");
         return ob;
     }
