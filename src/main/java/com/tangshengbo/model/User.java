@@ -1,12 +1,12 @@
 package com.tangshengbo.model;
 
 import com.alibaba.fastjson.JSON;
+import org.springframework.data.redis.core.RedisHash;
 
-public class User {
-    /**
-     * 编号
-     */
-    private Long id;
+import java.util.Date;
+
+@RedisHash("user")
+public class User extends Base {
 
     /**
      * 用户名
@@ -18,6 +18,16 @@ public class User {
      */
     private String password;
 
+    private Date createDate;
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
+
     public User(String username, String password) {
         this.username = username;
         this.password = password;
@@ -26,21 +36,6 @@ public class User {
     public User() {
     }
 
-    /**
-     * 编号
-     * @return id 编号
-     */
-    public Long getId() {
-        return id;
-    }
-
-    /**
-     * 编号
-     * @param id 编号
-     */
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     /**
      * 用户名
