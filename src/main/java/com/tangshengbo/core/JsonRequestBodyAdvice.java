@@ -1,8 +1,8 @@
 package com.tangshengbo.core;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpInputMessage;
@@ -39,10 +39,10 @@ public class JsonRequestBodyAdvice extends RequestBodyAdviceAdapter implements R
             headers = inputMessage.getHeaders();
             body = inputMessage.getBody();
             String content = IOUtils.toString(body, "UTF-8");
-            content = StringEscapeUtils.unescapeEcmaScript(content);
-            System.out.println(JSON.toJSON(content));
+            JSONObject jsonObject = JSON.parseObject(content);
+            jsonObject.put("request", jsonObject.getJSONObject("request"));
+            content = jsonObject.toJSONString();
             System.out.println(content);
-
             this.body = IOUtils.toInputStream(content, "UTF-8");
         }
 

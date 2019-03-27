@@ -20,6 +20,16 @@ public class User extends Base {
 
     private Date createDate;
 
+    private RequestBean request;
+
+    public RequestBean getRequest() {
+        return request;
+    }
+
+    public void setRequest(RequestBean request) {
+        this.request = request;
+    }
+
     public Date getCreateDate() {
         return createDate;
     }
@@ -68,6 +78,31 @@ public class User extends Base {
     public void setPassword(String password) {
         this.password = password == null ? null : password.trim();
     }
+
+    private static class RequestBean {
+
+        private String amount;
+
+        private String computer;
+
+        public String getAmount() {
+            return amount;
+        }
+
+        public void setAmount(String amount) {
+            this.amount = amount;
+        }
+
+        public String getComputer() {
+            return computer;
+        }
+
+        public void setComputer(String computer) {
+            this.computer = computer;
+        }
+
+    }
+
 
     @Override
     public String toString() {

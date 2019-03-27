@@ -38,6 +38,12 @@ public class UserController {
         return userService.findAll();
     }
 
+    @PostMapping("/add")
+    public ApiResult addUser(@RequestBody User user) {
+        logger.info("{}", user);
+        return ApiResult.success("成功");
+    }
+
 
     @GetMapping("/dateType")
     public ApiResult getDateType(String date, @CookieValue("JSESSIONID") String JSESSIONID) {
