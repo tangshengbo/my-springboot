@@ -17,33 +17,38 @@ import java.lang.reflect.Type;
 
 /**
  * Created by Tangshengbo on 2019/3/27
+ * 清除JSON转义字符
  */
 @ControllerAdvice
-public class JsonRequestBodyAdvice extends RequestBodyAdviceAdapter implements RequestBodyAdvice {
+public class PurgeJsonEscapeRequestBodyAdvice extends RequestBodyAdviceAdapter implements RequestBodyAdvice {
 
     @Override
     public boolean supports(MethodParameter methodParameter, Type targetType, Class<? extends HttpMessageConverter<?>> converterType) {
-        return true;
+        return methodParameter.hasMethodAnnotation(PurgeJsonEscape.class);
     }
 
     @Override
     public HttpInputMessage beforeBodyRead(HttpInputMessage inputMessage, MethodParameter parameter, Type targetType, Class<? extends HttpMessageConverter<?>> converterType) throws IOException {
-        return new EscapeInputMessage(super.beforeBodyRead(inputMessage, parameter, targetType, converterType));
+        return new PurgeEscapeInputMessage(super.beforeBodyRead(inputMessage, parameter, targetType, converterType), parameter);
     }
 
-    private static class EscapeInputMessage implements HttpInputMessage {
+    private static class PurgeEscapeInputMessage implements HttpInputMessage {
         private HttpHeaders headers;
         private InputStream body;
 
-        EscapeInputMessage(HttpInputMessage inputMessage) throws IOException {
+        PurgeEscapeInputMessage(HttpInputMessage inputMessage, MethodParameter parameter) throws IOException {
             headers = inputMessage.getHeaders();
             body = inputMessage.getBody();
-            String content = IOUtils.toString(body, "UTF-8");
+            purgeEscape(parameter);
+        }
+
+        private void purgeEscape(MethodParameter parameter) throws IOException {
+            PurgeJsonEscape methodAnnotation = parameter.getMethodAnnotation(PurgeJsonEscape.class);
+            String content = IOUtils.toString(body, methodAnnotation.encoding());
             JSONObject jsonObject = JSON.parseObject(content);
-            jsonObject.put("request", jsonObject.getJSONObject("request"));
+            jsonObject.put(methodAnnotation.value(), jsonObject.getJSONObject(methodAnnotation.value()));
             content = jsonObject.toJSONString();
-            System.out.println(content);
-            this.body = IOUtils.toInputStream(content, "UTF-8");
+            this.body = IOUtils.toInputStream(content, methodAnnotation.encoding());
         }
 
         @Override
