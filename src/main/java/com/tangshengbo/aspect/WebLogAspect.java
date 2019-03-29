@@ -1,6 +1,8 @@
 package com.tangshengbo.aspect;
 
 import com.tangshengbo.controller.BaseController;
+import com.tangshengbo.model.HttpLog;
+import com.tangshengbo.service.LogService;
 import com.tangshengbo.util.JsonUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -8,6 +10,7 @@ import org.aspectj.lang.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.AbstractErrors;
@@ -33,13 +36,14 @@ public class WebLogAspect extends BaseController {
 
     private static final Logger logger = LoggerFactory.getLogger(WebLogAspect.class);
 
-//    @DeclareParents(value = "com.tangshengbo.service.LogService+", defaultImpl = com.tangshengbo.service.impl.AccountServiceImpl.class )
+    //    @DeclareParents(value = "com.tangshengbo.service.LogService+", defaultImpl = com.tangshengbo.service.impl.AccountServiceImpl.class )
 //    private AccountService AccountService;
+    @Autowired
+    private LogService logService;
 
     private static final List<Class<?>> ignoreClasses = Arrays.asList(
             HttpSession.class, AbstractErrors.class, OncePerRequestFilter.class, ServletRequest.class,
             ServletResponse.class, Format.class, InputStream.class);
-
 
 
     //两个..代表所有子目录，最后括号里的两个..代表所有参数
@@ -72,16 +76,15 @@ public class WebLogAspect extends BaseController {
         logger.info("CLASS_METHOD : " + joinPoint.getSignature().getDeclaringTypeName() + "."
                 + joinPoint.getSignature().getName());
         logger.info("参数 : " + toJsonString(joinPoint.getArgs()));
-
-//        writeLog(requestUrl, httpMethod, clientIp, clientProxy);
-
+        logService.saveHttpLog(new HttpLog(requestUrl, httpMethod, clientIp, clientProxy));
     }
 
     // returning的值和doAfterReturning的参数名一致
     @AfterReturning(returning = "ret", pointcut = "logPointCut()")
     public void doAfterReturning(Object ret) throws Throwable {
         // 处理完请求，返回内容
-        logger.info("返回值 : " + ret);
+
+        logger.info("返回值 : {}", ret);
         MDC.clear();
 //        logger.info("{}", MDC.getCopyOfContextMap().size());
     }

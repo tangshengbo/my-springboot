@@ -1,5 +1,7 @@
 package com.tangshengbo.model;
 
+import com.alibaba.fastjson.JSON;
+
 /**
  * Created by Tangshengbo on 2018/9/30
  */
@@ -89,4 +91,11 @@ public class ApiResult<T> {
         result.setMessage(message);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return JSON.toJSONString(this);
+    }
+
+
 }
