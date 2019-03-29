@@ -1,6 +1,7 @@
 package com.tangshengbo.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.tangshengbo.core.PurgeJsonEscape;
 import com.tangshengbo.model.ApiResult;
 import com.tangshengbo.model.User;
 import com.tangshengbo.service.UserService;
@@ -38,6 +39,7 @@ public class UserController {
         return userService.findAll();
     }
 
+    @PurgeJsonEscape
     @PostMapping("/add")
     public ApiResult addUser(@RequestBody User user) {
         logger.info("{}", user);
