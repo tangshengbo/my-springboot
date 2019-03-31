@@ -45,8 +45,8 @@ public class LogServiceImpl implements LogService {
     @Override
     public void saveHttpLog(HttpLog httpLog) {
         httpLog.setLogId(redisTemplate.opsForValue().increment(HTTP_LOG_ID,  DELTA));
-        String address = getAddressByIp(httpLog.getClientIp());
-        httpLog.setClientAddress(address);
+//        String address = getAddressByIp(httpLog.getClientIp());
+//        httpLog.setClientAddress(address);
         httpLog.setCreateDate(new Date());
         repository.save(httpLog);
     }

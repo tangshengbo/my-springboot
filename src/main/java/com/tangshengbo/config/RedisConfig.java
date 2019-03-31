@@ -8,6 +8,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.springframework.cache.annotation.CachingConfigurerSupport;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
@@ -16,10 +19,13 @@ import org.springframework.data.redis.repository.configuration.EnableRedisReposi
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
 @EnableRedisRepositories(basePackages = {"com.tangshengbo.repository"})
+@EnableRedisHttpSession(maxInactiveIntervalInSeconds = 60 * 5)
+@EnableCaching
 @Configuration
-public class RedisTemplateConfig {
+public class RedisConfig extends CachingConfigurerSupport {
 
     @Bean
     public RedisTemplate redisTemplate(LettuceConnectionFactory connectionFactory) {
@@ -40,5 +46,18 @@ public class RedisTemplateConfig {
         redisTemplate.setHashValueSerializer(serializer);//Hash value序列化
         redisTemplate.afterPropertiesSet();
         return redisTemplate;
+    }
+
+    @Override
+    public KeyGenerator keyGenerator() {
+        return (target, method, params) -> {
+            StringBuilder sb = new StringBuilder();
+            sb.append(target.getClass().getName());
+            sb.append(method.getName());
+            for (Object param : params) {
+                sb.append(param.toString());
+            }
+            return sb.toString();
+        };
     }
 }

@@ -5,6 +5,7 @@ import com.tangshengbo.dao.UserMapper;
 import com.tangshengbo.model.User;
 import com.tangshengbo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,9 +20,14 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserMapper userMapper;
 
+    @Cacheable(value = "userList-key")
     @Override
     public List<User> findAll() {
-        return userMapper.findAll();
+        List<User> all = userMapper.findAll();
+        System.out.println("数据库查询");
+        return all;
+
+
     }
 
     @Override

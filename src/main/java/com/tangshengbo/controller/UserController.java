@@ -27,7 +27,6 @@ public class UserController {
     @Autowired
     private RestTemplate restTemplate;
 
-
     /**
      * 查询所有
      *
@@ -35,7 +34,7 @@ public class UserController {
      */
     @SuppressWarnings("unchecked")
     @RequestMapping("/findAll")
-    public List<User> redisFindAll() {
+    public List<User> findAll() {
         return userService.findAll();
     }
 

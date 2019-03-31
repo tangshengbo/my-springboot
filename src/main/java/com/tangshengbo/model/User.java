@@ -3,10 +3,11 @@ package com.tangshengbo.model;
 import com.alibaba.fastjson.JSON;
 import org.springframework.data.redis.core.RedisHash;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @RedisHash("user")
-public class User extends Base {
+public class User extends Base implements Serializable {
 
     /**
      * 用户名
