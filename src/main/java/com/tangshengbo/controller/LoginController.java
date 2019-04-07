@@ -1,9 +1,12 @@
 package com.tangshengbo.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.tangshengbo.model.ApiResult;
 import com.tangshengbo.model.User;
 import com.tangshengbo.service.UserService;
+import com.tangshengbo.util.MD5Util;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,15 +15,21 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import java.util.Random;
+import java.util.concurrent.TimeUnit;
+
 /**
  * Created by Tangshengbo on 2018/9/30
  */
 @Controller
-@RequestMapping("")
 public class LoginController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
+
 
     /**
      * 登录
@@ -36,9 +45,14 @@ public class LoginController {
         User user = userService.findByName(username);
         if (user != null) {
             if (user.getPassword().equals(password)) {
+                String token = String.valueOf(System.currentTimeMillis() + new Random().nextInt(999999999));
+                token = MD5Util.md5(token);
+                redisTemplate.opsForValue().set(String.format("my-springboot:login:%s", token), username, 30, TimeUnit.MINUTES);
                 ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
                 attributes.getRequest().getSession().setAttribute("user", user); //将登陆用户信息存入到session域对象中
-                return new ApiResult(true, user.getUsername());
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("token", token);
+                return ApiResult.success(jsonObject);
             }
         }
         return new ApiResult(false, "登录失败");
