@@ -1,6 +1,7 @@
 package com.tangshengbo.config;
 
 import com.tangshengbo.interceptor.LoginInterceptor;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -18,13 +19,19 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new LoginInterceptor()).addPathPatterns("/user/*").excludePathPatterns("/static/*");
+        registry.addInterceptor(loginInterceptor()).addPathPatterns("/user/*").excludePathPatterns("/static/*");
     }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
 
     }
+
+    @Bean
+    public LoginInterceptor loginInterceptor() {
+        return new LoginInterceptor();
+    }
+
 
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
