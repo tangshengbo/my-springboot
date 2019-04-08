@@ -26,8 +26,6 @@ public class UserServiceImpl implements UserService {
         List<User> all = userMapper.findAll();
         System.out.println("数据库查询");
         return all;
-
-
     }
 
     @Override
