@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpClientErrorException;
@@ -33,7 +32,6 @@ public class ControllerExceptionHandler {
      * @throws MissingServletRequestParameterException
      */
     @ExceptionHandler(value = MissingServletRequestParameterException.class)
-    @ResponseBody
     public ApiResult<String> jsonErrorHandler(HttpServletRequest req, MissingServletRequestParameterException e) throws Exception {
         logger.error("uri[" + req.getRequestURI() + "]调用异常,请求参数[" + getParamString(req) + "]错误信息:", e);
         ApiResult<String> apiResult = new ApiResult<>();
@@ -52,7 +50,6 @@ public class ControllerExceptionHandler {
      * @throws
      */
     @ExceptionHandler(value = {ResourceAccessException.class, HttpClientErrorException.class, IOException.class})
-    @ResponseBody
     public ApiResult<String> timeoutErrorHandler(HttpServletRequest req, Exception e) throws Exception {
         logger.error("uri[" + req.getRequestURI() + "]调用异常,请求参数[" + getParamString(req) + "]错误信息:", e);
         ApiResult<String> apiResult = new ApiResult<>();
@@ -71,7 +68,6 @@ public class ControllerExceptionHandler {
      * @throws
      */
     @ExceptionHandler(value = {Exception.class})
-    @ResponseBody
     public ApiResult<String> commonException(HttpServletRequest req, Exception e) throws Exception {
         logger.error("uri[" + req.getRequestURI() + "]调用异常,请求参数[" + getParamString(req) + "]错误信息:", e);
         ApiResult<String> apiResult = new ApiResult<>();
