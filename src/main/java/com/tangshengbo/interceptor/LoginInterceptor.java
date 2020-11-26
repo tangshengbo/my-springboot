@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Objects;
 
 /**
  * Created by Tangshengbo on 2018/9/30
@@ -27,16 +26,16 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String token = request.getHeader("token");
-        if (token == null) {
-            noLogin(response);
-            return false;
-        }
-        Object obj = redisTemplate.opsForValue().get(String.format("my-springboot:login:%s", token));
-        if (Objects.isNull(obj)) {
-            noLogin(response);
-            return false;
-        }
+//        String token = request.getHeader("token");
+//        if (token == null) {
+//            noLogin(response);
+//            return false;
+//        }
+//        Object obj = redisTemplate.opsForValue().get(String.format("my-springboot:login:%s", token));
+//        if (Objects.isNull(obj)) {
+//            noLogin(response);
+//            return false;
+//        }
 //        User user = (User) request.getSession().getAttribute("user");
 //        if (user == null) {
 //            logger.info("-----------用户未登录-----------");

@@ -1,7 +1,9 @@
 package com.tangshengbo.controller;
 
 
+import com.tangshengbo.dao.DltaskMapper;
 import com.tangshengbo.model.ApiResult;
+import com.tangshengbo.model.Dltask;
 import com.tangshengbo.model.Goods;
 import com.tangshengbo.model.PageBean;
 import com.tangshengbo.service.GoodsService;
@@ -14,11 +16,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by Tangshengbo on 2018/9/30
@@ -34,6 +39,9 @@ public class GoodsController {
 
     @Autowired
     private HttpServletRequest request;
+
+    @Resource
+    private DltaskMapper dltaskMapper;
 
     /**
      * 分页查询
@@ -94,13 +102,26 @@ public class GoodsController {
      */
     @RequestMapping("/delete")
     public ApiResult delete(@RequestBody Long... ids) {
-        try {
-            goodsService.delete(ids);
-            return new ApiResult(true, "更新数据成功");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ApiResult(false, "发生未知错误");
+//        try {
+//            goodsService.delete(ids);
+//            return new ApiResult(true, "更新数据成功");
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return new ApiResult(false, "发生未知错误");
+//        }
+        Dltask dltask = new Dltask();
+        dltask.setA("a");
+        dltask.setB("b");
+        dltask.setC("c");
+
+        ExecutorService executorService = Executors.newFixedThreadPool(3);
+
+        Runnable r = () -> dltaskMapper.deleteBy(dltask);
+        for (int i = 0; i < 3; i++) {
+            executorService.execute(r);
         }
+
+        return new ApiResult(true, "更新数据成功");
     }
 
     /**

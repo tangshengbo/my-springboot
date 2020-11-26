@@ -1,6 +1,7 @@
 package com.tangshengbo.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.github.AopLog;
 import com.tangshengbo.core.PurgeJsonEscape;
 import com.tangshengbo.model.ApiResult;
 import com.tangshengbo.model.User;
@@ -16,6 +17,7 @@ import java.util.List;
 /**
  * Created by Tangshengbo on 2018/9/30
  */
+@AopLog
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -48,12 +50,12 @@ public class UserController {
 
 
     @GetMapping("/dateType")
-    public ApiResult getDateType(String date, @CookieValue("JSESSIONID") String JSESSIONID) {
-        logger.info("dateType param:{},{}", date, JSESSIONID);
+    public ApiResult getDateType(String date) {
+        logger.info("dateType param:{},{}", date);
         String url = "https://api.goseek.cn/Tools/holiday?date=" + date;
-        String result = restTemplate.getForObject(url, String.class);
+//        String result = restTemplate.getForObject(url, String.class);
         logger.info("dateType result:{}", date);
-        return ApiResult.success(result);
+        return ApiResult.success("");
     }
 
     @GetMapping("/jsonp")
